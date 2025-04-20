@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'bank_mini', 'siswa']);
-            $table->decimal('balance', 15, 2)->default(0);
+            $table->decimal('balance', 10, 2)->default(0);
             $table->rememberToken();
             $table->timestamps();
             $table->boolean('is_admin')->default(false);
