@@ -16,7 +16,7 @@ class SiswaController extends Controller
         $request->validate([
             'type' => 'required|in:top_up,withdraw,transfer',
             'amount' => 'required|numeric|min:1000',
-            'recipient_name' => 'required_if:type,transfer|string|exists:users,name',
+            'recipient_name' => 'required_if:type,transfer|string|exists:users,name',  // Validasi penerima
         ]);
     
         // Pastikan user sudah login
@@ -25,7 +25,7 @@ class SiswaController extends Controller
         }
     
         /** @var \App\Models\User $user */
-        $user = Auth::user();
+        $user = Auth::user();  // Ambil user yang sedang login
         $type = $request->type;
         $amount = $request->amount;
     
@@ -63,6 +63,7 @@ class SiswaController extends Controller
                 ]);
     
             } elseif ($type === 'transfer') {
+                // Proses transfer
                 $recipientName = $request->recipient_name;
                 $recipient = User::where('name', $recipientName)->first();
     
@@ -115,4 +116,5 @@ class SiswaController extends Controller
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+    
 }
