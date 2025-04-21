@@ -11,7 +11,6 @@
 
   <div class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
     <aside class="w-64 bg-white border-r border-blue-100 p-6 shadow-md">
       <h2 class="text-2xl font-bold mb-8 text-blue-800">🏦 Bank Mini</h2>
       <form action="{{ url('/logout') }}" method="POST" class="mt-10">
@@ -20,18 +19,15 @@
       </form>
     </aside>
 
-    <!-- Main Content -->
     <main class="flex-1 p-8 overflow-y-auto">
       <header class="mb-8">
         <h1 class="text-3xl font-semibold text-blue-800">Selamat Datang di Bank Mini</h1>
         <p class="text-sm text-blue-600 mt-1">Pantau aktivitas dan kelola keuangan dengan mudah</p>
       </header>
 
-      <!-- Transaksi Bank Mini & Riwayat Transaksi dalam Satu Card -->
       <section class="mt-10 max-w-5xl mx-auto bg-white border border-blue-100 rounded-xl p-6 shadow-sm hover:shadow-md transition">
         <h3 class="text-xl font-semibold text-blue-700 mb-4">💳 Transaksi Bank Mini & Riwayat</h3>
 
-        <!-- Form Top Up -->
         <form action="{{ route('admin.transaction.store') }}" method="POST" class="mb-8">
           @csrf
           <input type="hidden" name="type" value="top_up">
@@ -54,7 +50,6 @@
           </div>
         </form>
 
-        <!-- Form Withdraw -->
         <form action="{{ route('admin.transaction.store') }}" method="POST" class="mb-8">
           @csrf
           <input type="hidden" name="type" value="withdraw">
@@ -77,45 +72,60 @@
           </div>
         </form>
 
-        <!-- Riwayat Transaksi -->
         <div class="mt-8">
           <h4 class="text-lg font-semibold text-blue-700 mb-4">📜 Riwayat Transaksi</h4>
-          <div class="overflow-x-auto">
-            <table class="min-w-full border border-blue-200 text-sm text-blue-800">
-              <thead class="bg-blue-100 text-blue-900">
-                <tr>
-                  <th class="px-4 py-2 border">No</th>
-                  <th class="px-4 py-2 border">Nama Pengirim</th>
-                  <th class="px-4 py-2 border">Jenis Transaksi</th>
-                  <th class="px-4 py-2 border">Jumlah</th>
-                  <th class="px-4 py-2 border">Penerima</th>
-                  <th class="px-4 py-2 border">Tanggal</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($transactions as $index => $trx)
-                <tr class="hover:bg-blue-50">
-                  <td class="px-4 py-2 border text-center">{{ $index + 1 }}</td>
-                  <td class="px-4 py-2 border">{{ $trx->user->name }}</td>
-                  <td class="px-4 py-2 border">{{ ucfirst($trx->type) }}</td>
-                  <td class="px-4 py-2 border">Rp {{ number_format($trx->amount, 0, ',', '.') }}</td>
-                  <td class="px-4 py-2 border">
-                    @if ($trx->recipient)
-                    {{ $trx->recipient->name }}
-                    @else
-                    Bank Mini
-                    @endif
-                  </td>
-                  <td class="px-4 py-2 border">{{ $trx->created_at->format('Y-m-d') }}</td>
-                </tr>
-                @endforeach
-              </tbody>
-            </table>
+      
+          <div class="mb-4">
+              <button onclick="printDiv('printArea')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">🖨️ Cetak Transaksi</button>
           </div>
-        </div>
-      </section>
 
-      <!-- Data User -->
+          <div id="printArea" class="overflow-x-auto">
+              <table class="min-w-full border border-blue-200 text-sm text-blue-800">
+                  <thead class="bg-blue-100 text-blue-900">
+                      <tr>
+                          <th class="px-4 py-2 border">No</th>
+                          <th class="px-4 py-2 border">Nama Pengirim</th>
+                          <th class="px-4 py-2 border">Jenis Transaksi</th>
+                          <th class="px-4 py-2 border">Jumlah</th>
+                          <th class="px-4 py-2 border">Penerima</th>
+                          <th class="px-4 py-2 border">Tanggal</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      @foreach($transactions as $index => $trx)
+                          <tr class="hover:bg-blue-50">
+                              <td class="px-4 py-2 border text-center">{{ $index + 1 }}</td>
+                              <td class="px-4 py-2 border">{{ $trx->user->name }}</td>
+                              <td class="px-4 py-2 border">{{ ucfirst($trx->type) }}</td>
+                              <td class="px-4 py-2 border">Rp {{ number_format($trx->amount, 0, ',', '.') }}</td>
+                              <td class="px-4 py-2 border">
+                                  @if ($trx->recipient)
+                                      {{ $trx->recipient->name }}
+                                  @else
+                                      Bank Mini
+                                  @endif
+                              </td>
+                              <td class="px-4 py-2 border">{{ $trx->created_at->format('Y-m-d') }}</td>
+                          </tr>
+                      @endforeach
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      
+      <script>
+          function printDiv(divId) {
+              const printContents = document.getElementById(divId).innerHTML;
+              const originalContents = document.body.innerHTML;
+      
+              document.body.innerHTML = printContents;
+              window.print();
+              document.body.innerHTML = originalContents;
+              location.reload(); 
+          }
+      </script>
+      </section>
+      
       <section class="mt-10 max-w-5xl mx-auto">
   <h2 class="text-xl font-semibold text-blue-700 mb-4">Data User</h2>
   <div class="bg-white border border-blue-100 rounded-lg shadow overflow-x-auto">
